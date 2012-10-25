@@ -1,0 +1,390 @@
+${project.root}
+  |
+  +-- build/           <-- WAR/EAR档的目录
+  +-- classes/         <-- 编译的输出目录，与JBuilder兼容
+  +-- src/             <-- Java源文件目录
+  +-- web/             <-- WEB Content 目录
+  |    |
+  |    +--pages/       <-- JSP 文件目录
+  |    +--WEB-INF/     <-- web.xml 等配置文件
+  +-- ejb              <-- EJB Content 目录
+  |    |
+  |    +--META-INF/    <-- EJB 配置文件
+  +-- ear              <-- EAR Content 目录
+  |    |
+  |    +--META-INF/    <-- EAR 配置文件
+  |-- lib              <-- 项目所要用到的library 
+
+
+
+整理一个ANT在J2EE项目中的应用，含预编译JSP和打包WAR/EAR文件！ 
+
+
+
+
+
+接下来第一步，就是要先定义好一些全局的参数，以便以后更改起来方便，风格
+大家自己选择好了，我用的是如下的方式：
+
+
+
+(1) 给出项目的目录：
+
+
+
+  <!--// project directories //-->  <property name="dir.project" value="D:/Code/MyProject"/>  <property name="dir.project.lib" value="${dir.project}/lib"/>  <property name="dir.project.src" value="${dir.project}/src"/>  <property name="dir.project.web_module" value="${dir.project}/web"/>  <property name="dir.project.ejb_module" value="${dir.project}/ejb"/>  <property name="dir.project.ear_module" value="${dir.project}/ear"/>  <!--// compile, build and deploy directories //-->  <property name="dir.project.compile" value="${dir.project}/classes"/>  <property name="dir.project.compile.jspcache" value="${dir.project.compile}/jspcache"/>  <property name="dir.project.build" value="${dir.project}/build"/>    <!--// J2EE Container //-->  <property name="dir.appserver.tomcat.home" value="D:/J2EE_HOME/AppServer/Tomcat"/>  <property name="dir.appserver.oc4j.j2ee.home" value="D:/J2EE_HOME/AppServer/OC4J/j2ee/home"/>
+ 
+
+
+
+
+
+
+
+
+
+(2) 定义Java Source的编译选项
+
+
+
+   <!--// Java compiler options //-->   <property name="opt.compile.source" value="1.4"/>  <property name="opt.compile.target" value="1.4"/>  <property name="opt.compile.encoding" value="UTF-8"/>  <property name="opt.compile.deprecation" value="on"/>  <property name="opt.compile.debug" value="on"/>  <property name="opt.compile.optimize" value="off"/>
+ 
+
+
+
+
+
+
+
+
+
+(3) 如果需要 import EJB library 的话，给出下面的定义，后面会用到
+
+
+
+    <!--// EJB imported resource //-->  <property name="import.ejb.report.server" value="${dir.project.lib}/AppFramework.jar"/>
+ 
+
+
+
+
+
+
+
+
+
+(4) 给出部署WAR/EAR文件的名称：
+
+
+
+  <!--// Deployment //-->  <property name="deploy.file.ejb_module" value="MyApp_EJB.jar" />  <property name="deploy.file.web_module" value="MyApp_WEB.war" />  <property name="deploy.file.ear_module" value="MyApp.ear" />
+ 
+
+
+
+
+
+
+
+
+
+(5) 给出CLASSPATH的定义，引入相关的Library和项目编译生成的Java Classes
+
+
+
+  <path id="CLASSPATH">    <!--// Tomcat Libraries //-->    <fileset dir="${dir.appserver.tomcat.home}/bin">       <include name="*.jar"/>    </fileset>     <fileset dir="${dir.appserver.tomcat.home}/server/lib">       <include name="*.jar"/>     </fileset>     <fileset dir="${dir.appserver.tomcat.home}/common/lib">       <include name="*.jar"/>     </fileset>     <!--// OC4J Libraries    <fileset dir="${dir.appserver.oc4j.j2ee.home}">       <include name="*.jar"/>    </fileset>     <fileset dir="${dir.appserver.oc4j.j2ee.home}/lib">       <include name="*.jar"/>     </fileset>     //-->    <!--// Depended Libraries //-->    <pathelement location="${dir.project.lib}/abc.jar"/>    <pathelement location="${dir.project.lib}/AppServer.jar"/>    <pathelement location="${dir.project.lib}/AppServiceClient.jar"/>    <pathelement location="${dir.project.lib}/AppUtil.jar"/>    <pathelement location="${dir.project.lib}/xport.jar"/>    <pathelement location="${dir.project.lib}/jaxen-full.jar"/>    <pathelement location="${dir.project.lib}/jstl.jar"/>    <pathelement location="${dir.project.lib}/log4j-1.2.13.jar"/>    <pathelement location="${dir.project.lib}/ojdbc14.jar"/>    <pathelement location="${dir.project.lib}/saxpath.jar"/>    <pathelement location="${dir.project.lib}/standard.jar"/>    <pathelement location="${dir.project.lib}/taglibs-log.jar"/>    <!--// Project classes //-->    <pathelement location="${dir.project.compile}"/>  </path>
+ 
+
+
+
+
+
+
+
+
+
+(6) 基本的clean和init的task
+
+
+
+  <target name="clean">    <delete dir="${dir.project.build}"/>    <delete dir="${dir.project.compile.jspcache}"/>    <delete dir="${dir.project.compile}"/>    <delete dir="${dir.project.web_module}/WEB-INF/classes"/>    <delete dir="${dir.project.web_module}/WEB-INF/lib"/>  </target>      <target name="init">    <mkdir dir="${dir.project.compile}"/>    <mkdir dir="${dir.project.compile.jspcache}"/>    <mkdir dir="${dir.project.web_module}/WEB-INF/classes"/>    <mkdir dir="${dir.project.web_module}/WEB-INF/lib"/>    <mkdir dir="${dir.project.build}"/>  </target>
+ 
+
+
+
+
+
+
+
+
+
+(7) 编译Java Source
+
+
+
+  <target name="src_compile" depends="init">    <!--// compile the Java source //-->    <javac srcdir="${dir.project.src}"            destdir="${dir.project.compile}"            encoding="${opt.compile.encoding}"            source="${opt.compile.source}"            target="${opt.compile.source}"            deprecation="${opt.compile.deprecation}"           debug="${opt.compile.debug}"            optimize="{opt.compile.optimize}" >      <classpath refid="CLASSPATH"/>      <include name="**/*.java"/>    </javac>    <!--// copy the classpath resources //-->    <copy todir="${dir.project.compile}">      <fileset dir="${dir.project.src}">        <exclude name="**/*.java"/>      </fileset>    </copy>   </target>
+ 
+
+
+
+
+
+
+
+
+
+(8) 预编译JSP文件，可选择基于Tomcat或是Oracle Application Server
+
+
+
+<!--// for Tomcat //-->
+<target name="jsp_src_generate" depends="src_compile">    <taskdef classname="org.apache.jasper.JspC" name="jasper2">      <classpath refid="CLASSPATH"/>      </taskdef>    <jasper2 validateXml="false"              verbose="9"             uriroot="${dir.project.web_module}"              outputDir="${dir.project.compile.jspcache}"              webXmlFragment="${dir.project.compile.jspcache}/generated-web.xml" />   </target>    <!--// for OC4J 9.0.4    <target name="jsp_src_generate" depends="src_compile">      <java classname="oracle.jsp.tools.Jspc" fork="yes" failonerror="true">        <classpath refid="CLASSPATH"/>        <arg line="-extend com.orionserver.http.OrionHttpJspPage"/>        <arg line="-srcdir ${dir.project.compile.jspcache}"/>        <arg line="-appRoot ${dir.project.web_module}"/>        <arg line="-noCompile"/>        <arg line="-debug"/>        <arg line="-verbose"/>        <arg line="${dir.project.web}/*.jsp"/>      </java>    </target>  //-->    <target name="jsp_src_compile">    <javac srcdir="${dir.project.compile.jspcache}"            destdir="${dir.project.compile.jspcache}"            encoding="${opt.compile.encoding}"            source="${opt.compile.source}"            target="${opt.compile.source}"            deprecation="${opt.compile.deprecation}"           debug="${opt.compile.debug}"            optimize="{opt.compile.optimize}" >      <classpath refid="CLASSPATH"/>      <include name="**"/>    </javac>  </target>    <target name="jsp_precompile" depends="src_compile, jsp_src_generate, jsp_src_compile" />
+ 
+
+
+
+
+
+
+
+
+
+(9) 开始进行compile，make 和 build，并生成部署档案
+
+<target name="compile" depends="src_compile, jsp_precompile" />    
+<!--// Build WAR file //-->  
+<target name="make.web_module" depends="compile">    
+<war destfile="${dir.project.build}/${deploy.file.web_module}" webxml="${dir.project.web_module}/WEB-INF/web.xml">      
+<fileset dir="${dir.project.web_module}" >        
+<include name="**"/>        
+<exclude name="WEB-INF/classes/**"/>        
+<exclude name="WEB-INF/lib/**"/>      
+</fileset>      
+<classes dir="${dir.project.compile}">        
+<include name="**"/>        
+<exclude name="project/package/trx/**"/>        
+<exclude name="jspcache/**"/>      
+</classes>      
+<lib dir="${dir.project.lib}">        
+<include name="AppUtil.jar"/>        
+<include name="AppClient.jar"/>      
+</lib>    
+</war>  
+</target>  
+<!--// Build EJB Jar file //-->  
+<target name="make.ejb_module" depends="src_compile">    
+<jar destfile="${dir.project.build}/${deploy.file.ejb_module}">      
+<zipgroupfileset dir="${dir.project.lib}">        
+<include name="AppServer.jar"/>      
+</zipgroupfileset>      
+<fileset dir="${dir.project.ejb_module}">        
+<include name="**"/>      
+</fileset>      
+<fileset dir="${dir.project.compile}">        
+<include name="**"/>        
+<exclude name="project/package/controller/**"/>        
+<exclude name="jspcache/**"/>      
+</fileset>    
+</jar>  
+</target>    
+<!--// Build EAR file //-->  
+<target name="make.ear_module" depends="compile, make.web_module, make.ejb_module">    
+<ear destfile="${dir.project.build}/${deploy.file.ear_module}" appxml="${dir.project.ear_module}/META-INF/application.xml">      
+<fileset dir="${dir.project.build}">        
+<include name="${deploy.file.web_module}"/>        
+<include name="${deploy.file.ejb_module}"/>      
+</fileset>    
+</ear>  
+</target>    
+<target name="make" depends="init, compile, make.web_module, make.ejb_module, make.ear_module" />    
+<target name="build" depends="clean, init, make" /> 
+
+
+
+
+
+
+
+
+
+
+1.<!---->  
+2.<project name="taxs_Admin" default="usage">  
+3.  
+4.    <!---->  
+5.    <property environment="env">  
+6.    <property file="build.properties">  
+7.  
+8.    <!---->  
+9.    <property name="project.home" value="${basedir}">  
+10.    <tstamp>  
+11.        <format property="TIME" pattern="yyyyMMddHHmm">  
+12.    </tstamp>  
+13.    <property name="build.version" value="${project.version}.v${TIME}">  
+14.  
+15.    <!---->  
+16.    <target name="usage" description="usage">  
+17.        <echo>此脚本运行的前提条件是:</echo>  
+18.        <echo>1.因为运行环境是tomcat，所以设置系统环境变量CATALINA_HOME指向tomcat所在目录.</echo>  
+19.        <echo>  
+20.        </echo>  
+21.        <echo>运行方式:</echo>  
+22.        <echo>1.ant build - 根据最新代码生成应用包；</echo>  
+23.    </target>  
+24.  
+25.    <!---->  
+26.    <property name="compile.version" value="1.6">  
+27.    <property name="compile.java.encoding" value="GBK">  
+28.    <property name="compile.jsp.encoding" value="UTF-8">  
+29.    <property name="compile.optimize" value="off">  
+30.    <property name="compile.debug" value="true">  
+31.    <property name="compile.failonerror" value="true">  
+32.    <property name="compile.deprecation" value="true">  
+33.  
+34.    <!---->  
+35.    <property name="build.home" location="${project.home}">  
+36.    <property name="src.main.java" location="${build.home}/src/">  
+37.    <property name="src.main.web" location="${build.home}/WebRoot/">  
+38.    <property name="library.path" location="${build.home}/WebRoot/WEB-INF/lib/">  
+39.    <property name="library.container" location="${env.CATALINA_HOME}/lib/">  
+40.    <property name="tomcat.home" location="${tomcat.home}">  
+41.    <property name="test.tomcat.home" location="${test.tomcat}">  
+42.  
+43.    <!---->  
+44.    <property name="target.dir" location="${project.home}/target">  
+45.    <property name="classes.dir" location="${target.dir}/classes">  
+46.    <property name="jasper.dir" location="${target.dir}/jasper">  
+47.    <property name="war.dir" location="${target.dir}/war">  
+48.    <property name="web.dir" location="${target.dir}/web">  
+49.    <property name="zip.dir" location="${target.dir}/zip">  
+50.      
+51.    <!---->  
+52.    <path id="master-classpath">  
+53.  
+54.        <!---->  
+55.        <pathelement path="${classes.dir}">  
+56.        <!---->  
+57.        <fileset dir="${library.path}">  
+58.           <include name="**/**">  
+59.        </fileset>  
+60.      
+61.        <!---->  
+62.        <fileset dir="${library.container}">  
+63.            <include name="**/**">  
+64.        </fileset>  
+65.    </path>  
+66.  
+67.    <!---->  
+68.    <target name="build" description="build">  
+69.        <antcall target="clean">  
+70.        <antcall target="compile">  
+71.        <antcall target="jspcompile">  
+72.        <antcall target="package">  
+73.    </target>  
+74.  
+75.    <!---->  
+76.    <target name="clean" description="Clean task files">  
+77.        <delete dir="${target.dir}">  
+78.    </target>  
+79.      
+80.    <!---->  
+81.    <target name="compile" description="Compile main source tree java files">  
+82.        <mkdir dir="${classes.dir}">  
+83.        <javac destdir="${classes.dir}" source="${compile.version}" target="${compile.version}" encoding="${compile.java.encoding}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" failonerror="${compile.failonerror}">  
+84.            <src path="${src.main.java}/">  
+85.            <classpath refid="master-classpath">  
+86.        </javac>  
+87.  
+88.        <native2ascii encoding="${compile.java.encoding}" dest="${classes.dir}" src="${src.main.java}" ext="_zh_CN.properties">  
+89.            <include name="**/*.native">  
+90.        </native2ascii>  
+91.        <native2ascii encoding="${compile.java.encoding}" dest="${classes.dir}" src="${src.main.java}" ext="_zh_TW.properties">  
+92.            <include name="**/*.native">  
+93.        </native2ascii>  
+94.        <native2ascii encoding="${compile.java.encoding}" dest="${classes.dir}" src="${src.main.java}" ext="_en_US.properties">  
+95.            <include name="**/*.native">  
+96.        </native2ascii>  
+97.  
+98.        <copy todir="${classes.dir}" preservelastmodified="true">  
+99.            <fileset dir="${src.main.java}">  
+100.                <include name="**/*.*">  
+101.                <exclude name="**/*.java">  
+102.            </fileset>  
+103.        </copy>  
+104.    </target>  
+105.  
+106.    <!---->  
+107.    <target name="jspcompile" description="Compile main source tree java files">  
+108.        <taskdef name="jasper2" classname="org.apache.jasper.JspC">  
+109.            <classpath refid="master-classpath">  
+110.        </taskdef>  
+111.        <mkdir dir="${jasper.dir}">  
+112.        <jasper2 validatexml="false" package="com.tenpay.taxs.jsp" uriroot="${src.main.web}" webxmlfragment="${src.main.web}/WEB-INF/generated_web.xml" outputdir="${jasper.dir}" addwebxmlmappings="true" verbose="9" listerrors="on">  
+113.        <javac destdir="${classes.dir}" source="${compile.version}" target="${compile.version}" encoding="${compile.jsp.encoding}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" failonerror="${compile.failonerror}" verbose="false">  
+114.            <src path="${jasper.dir}">  
+115.            <classpath refid="master-classpath">  
+116.        </javac>  
+117.    </target>  
+118.  
+119.    <target name="package" description="Package application as a war">  
+120.        <mkdir dir="${war.dir}">  
+121.        <war destfile="${war.dir}/${project.name}.war" webxml="${src.main.web}/WEB-INF/web.xml">  
+122.            <fileset dir="${src.main.web}">  
+123.                <include name="**/*.*">  
+124.                <exclude name="WEB-INF/web.xml">  
+125.                <exclude name="WEB-INF/lib/*.*">  
+126.            </fileset>  
+127.            <classes dir="${classes.dir}">  
+128.                <include name="**/*.*">  
+129.            </classes>  
+130.            <lib dir="${library.path}">  
+131.                <include name="*.*">  
+132.            </lib>  
+133.        </war>  
+134.        <copy todir="${war.dir}" preservelastmodified="true">  
+135.            <fileset dir="${project.home}">  
+136.                <include name="VERSION">  
+137.            </fileset>  
+138.        </copy>  
+139.    </target>  
+140.    <!---->  
+141.    <target name="copy" description="copy project into application" depends="build">  
+142.       <mkdir dir="${web.dir}">  
+143.       <copy todir="${web.dir}/${project.name}/ROOT">  
+144.        <fileset dir="${src.main.web}">  
+145.         <include name="**/*.*">  
+146.         <exclude name="WEB-INF/lib/*.*">  
+147.        </fileset>  
+148.      </copy>  
+149.      <copy todir="${web.dir}/${project.name}/ROOT/WEB-INF/classes">  
+150.            <fileset dir="${classes.dir}">  
+151.                        <include name="**/*.*">  
+152.            </fileset>  
+153.      </copy>  
+154.      <copy todir="${web.dir}/${project.name}/ROOT/WEB-INF/lib">  
+155.            <fileset dir="${library.path}">  
+156.                        <include name="*.*">  
+157.                </fileset>  
+158.     </copy>  
+159.    </target>  
+160.    <!---->  
+161.     <target name="deploy" depends="build" if="tomcat.home" description="unwar into the servlet container's deployment directory">  
+162.            <unwar src="${war.dir}/${project.name}.war" dest="${tomcat.home}/webapps/${project.name}">  
+163.     </target>  
+164.    <!---->  
+165.    <target name="deploytest" depends="build" if="test.tomcat" description="unwar into the servlet container's deployment directory">  
+166.        <unwar src="${war.dir}/${project.name}.war" dest="${test.tomcat}/${project.name}/ROOT">  
+167.    </target>  
+168.    <!---->  
+169.    <target name="packagezip" depends="copy" description="zip package">  
+170.        <mkdir dir="${zip.dir}">  
+171.        <zip zipfile="${zip.dir}/${project.name}.zip" basedir="${web.dir}">  
+172.        </zip>  
+173.    </target>  
+174.    <!---->  
+175.    <target name="login">  
+176.     <sshexec host="10.2.102.45" username="root" password="cft2008" trust="true" command="cd /usr/local/tomcat/  
+177.         ">  
+178.    </target>  
+179.</project>  
+

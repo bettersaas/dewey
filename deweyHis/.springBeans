@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<configExtensions>
+		<configExtension>xml</configExtension>
+	</configExtensions>
+	<configs>
+		<config>resources/spring/applicationContext-resource.xml</config>
+		<config>resources/spring/applicationContext-component.xml</config>
+		<config>resources/spring/applicationContext-service.xml</config>
+	</configs>
+	<configSets>
+	</configSets>
+	<springVersion>3.0</springVersion>
+</beansProjectDescription>
