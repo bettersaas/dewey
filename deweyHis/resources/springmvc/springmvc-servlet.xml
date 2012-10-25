@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="
+    		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  
+            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
+            default-autowire="byName" >
+     
+     <!-- import resource="spring/applicationContext-dao.xml"/ -->     
+    <!-- context:annotation-config /-->
+    
+	<!-- Configures support for @Controllers -->
+	<mvc:annotation-driven />
+
+	<!-- Configures Handler Interceptors --> 
+	<mvc:interceptors>
+		 <!-- interceptors -->
+	     <bean class="common.interceptor.LoggingInterceptor" />
+	</mvc:interceptors>
+    
+    <!-- 自动搜索@Controller标注的类 -->
+    <context:component-scan base-package="com.**.controller" />
+	
+	<!-- Handles GET requests for /resources/** by efficiently serving static content in the ${webappRoot}/resources dir --> 
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/styles/**"          location="/styles/" />
+	<mvc:resources mapping="/images/**"       location="/images/" />
+	<mvc:resources mapping="/scripts/**"        location="/scripts/" />
+
+	<mvc:default-servlet-handler/>  	<!-- 使用默认的处理如下 *.css   *.gif  *.jpg *.js-->
+	<!-- 
+    <bean id="configurationLoader" class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader"/>
+    <bean id="validator" class="org.springmodules.validation.bean.BeanValidator" p:configurationLoader-ref="configurationLoader"/>
+	< bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" p:basename="classpath:errors">    
+	      <property name="defaultEncoding" value="utf-8" />   
+	</bean>
+	--> 
+	
+	<bean id="defaultAnnotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		   <property name="alwaysUseFullPath" value="false"/>
+	</bean>
+ 
+ 	<!-- Spring3 MVC Restful 多请求类型 -->
+    <bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=GBK</value>
+						</list>
+					</property>
+				</bean>
+                <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.ResourceHttpMessageConverter"/>
+				<!-- 解析json请求数据，将json转换为java对象-->
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json;charset=GBK</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="webBindingInitializer">
+			<!-- Configures Spring MVC DataBinder instances -->
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="validator" ref="validator" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- Creates the JSR-303 Validator -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    
+    <!--  使用内容协商让Spring MVC支持xml json等格式输出即多视图配置(Json,Xml,JSP,Freemarker,Volacity等)  -->
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    	<property name="ignoreAcceptHeader" value="true" />
+    	<property name="defaultContentType" value="text/html" />
+        <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html" />
+                <entry key="json" value="application/json" />
+                <entry key="xml"  value="application/xml" />
+            </map>
+        </property>
+        <property name="favorParameter" value="false" />
+        <property name="viewResolvers">
+            <list>
+            	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+				<!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
+			    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+			        <property name="prefix" value="/pages/" />
+			        <property name="suffix" value=".jsp" />
+			    </bean>
+                <!-- 可加入其他视图技术如 volacity jstl等-->
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <!-- 输出为JSON数据-->
+                <bean name="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+                	<property name="contentType" value="application/json;charset=GBK" />
+                </bean>
+                <!-- 输出为xml数据-->
+                <bean id="marshallingView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <property name="marshaller">
+                        <bean id="xStreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" >
+                            <property name="autodetectAnnotations" value="true"/>
+                        </bean>
+                    </property>
+                    <property name="contentType" value="application/xml" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+   
+    <!-- MultipartResolver for parsing file uploads, implementation for Commons FileUpload  视图解析器   set the max upload size20MB  sping本身就包装了commons fileupload -->
+    <bean id="multipartResolver"  class="org.springframework.web.multipart.commons.CommonsMultipartResolver"  p:defaultEncoding="GBK">
+		<property name="maxUploadSize">
+			<value>20480000</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean >
+</beans>

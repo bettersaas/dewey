@@ -1,0 +1,177 @@
+BODY {
+	LINE-HEIGHT: 150%; BACKGROUND-COLOR: #ffffff; MARGIN-TOP: 1px; FONT-FAMILY: "宋体"; COLOR: #000000; MARGIN-LEFT: 0px; FONT-SIZE: 9pt; MARGIN-RIGHT: 0px
+}
+BODY.tvadmin {
+	LINE-HEIGHT: 150%; BACKGROUND-COLOR: #f1f8ff; MARGIN-TOP: 0px; FONT-FAMILY: "宋体"; COLOR: #ffffff; MARGIN-LEFT: 0px; FONT-SIZE: 9pt; MARGIN-RIGHT: 0px
+}
+BODY.nomargin {
+	LINE-HEIGHT: 150%; MARGIN-TOP: 0px; FONT-FAMILY: "宋体"; COLOR: #000000; MARGIN-LEFT: 0px; FONT-SIZE: 9pt; MARGIN-RIGHT: 0px
+}
+DIV {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+HR {
+	COLOR: #7fb3cc
+}
+HR.row {
+	COLOR: #eeeeee; BORDER-TOP: 1px
+}
+PRE {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+TD {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+TH {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+TABLE {
+	LINE-HEIGHT: 150%; FONT-SIZE: 9pt
+}
+TABLE.dataclass {
+	LINE-HEIGHT: 150%; FONT-SIZE: 9pt
+}
+TD.title {
+	BORDER-BOTTOM: black 1px solid; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #d6e7ef; COLOR: #228b22; FONT-SIZE: 9pt; BORDER-TOP: white 1px solid
+}
+TR.row {
+	BORDER-BOTTOM: #708090 1cm solid; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #eeeeee; FONT-SIZE: 9pt
+}
+TD.row {
+	BORDER-BOTTOM: #708090 1px groove; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #eff7ff; FONT-SIZE: 9pt
+}
+TD.row1 {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #eeeeee; FONT-SIZE: 9pt
+}
+TD.left {
+	BORDER-BOTTOM: #708090 1px groove; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #e7f3f7; FONT-SIZE: 9pt
+}
+TD.leftbak {
+	BORDER-BOTTOM: #708090 1px groove; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #00b8d8; FONT-SIZE: 9pt
+}
+TD.right {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #caf5fb; FONT-SIZE: 9pt
+}
+TD.bottom {
+	BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: right; LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; BACKGROUND: #d6e7ef; FONT-SIZE: 9pt
+}
+P.title {
+	FONT-FAMILY: 宋体; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+P {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+LI {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+CAPTION {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+INPUT {
+	FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+SELECT {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+TEXTAREA {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+OPTION {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+FORM {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+UL {
+	LINE-HEIGHT: 150%; FONT-FAMILY: 宋体; FONT-SIZE: 9pt
+}
+A:link {
+	COLOR: #0065ce; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #0065ce; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #ff0000; TEXT-DECORATION: underline
+}
+LI {
+	LIST-STYLE-TYPE: disc
+}
+.boxborder {
+	BORDER-BOTTOM: #9999ff 1px solid; BORDER-LEFT: #9999ff 0px solid; BACKGROUND-COLOR: #ffffff; COLOR: #ff6600; BORDER-TOP: #00cc00 0px solid; BORDER-RIGHT: #9999ff 0px solid
+}
+.titlebar {
+	BACKGROUND-COLOR: #2951ad; PADDING-LEFT: 10px; WIDTH: 100%; FONT: bold 14px/20px "Arial"; MARGIN-BOTTOM: 5px; COLOR: #ffffff; PADDING-TOP: 2px
+}
+.tabletitletext {
+	FONT-FAMILY: "Arial"; FONT-WEIGHT: bold
+}
+TABLE.tabletoolbar {
+	BORDER-BOTTOM: #253e82 1px double; BORDER-LEFT: #253e82 0px double; PADDING-BOTTOM: 3px; MARGIN-TOP: 2px; BORDER-COLLAPSE: collapse; MARGIN-BOTTOM: 2px; BORDER-TOP: #253e82 0px double; BORDER-RIGHT: #253e82 0px double
+}
+TABLE.tableframe {
+	BORDER-BOTTOM: #7c9ccf 1px solid; BORDER-LEFT: #7c9ccf 1px solid; BACKGROUND-COLOR: #ffffff; MARGIN-TOP: 5px; BORDER-COLLAPSE: collapse; BORDER-TOP: #7c9ccf 1px solid; BORDER-RIGHT: #7c9ccf 1px solid
+}
+TR.Listtitle {
+	BORDER-BOTTOM: #7c9ccf 1px solid; TEXT-ALIGN: center; FONT-FAMILY: 宋体; BACKGROUND: #8caae7; HEIGHT: 18px; COLOR: #ffffff; FONT-SIZE: 9pt; BORDER-TOP: #7c9ccf 1px solid; FONT-WEIGHT: bold
+}
+TR.ListtitleBorder {
+	BORDER-BOTTOM: #7c9ccf 1px solid; TEXT-ALIGN: center; BORDER-LEFT: #7c9ccf 1px solid; FONT-FAMILY: 宋体; BACKGROUND: #8caae7; HEIGHT: 18px; COLOR: #ffffff; FONT-SIZE: 9pt; BORDER-TOP: #7c9ccf 1px solid; BORDER-RIGHT: #7c9ccf 1px solid
+}
+TR.Listrow2 {
+	FONT-FAMILY: Arial; BACKGROUND: #ebf1fa; FONT-SIZE: 9pt
+}
+TR.Listrow1 {
+	FONT-FAMILY: Arial; BACKGROUND: #f1f1f1; FONT-SIZE: 9pt
+}
+TR.Listrow1_1 {
+	FONT-FAMILY: Arial; BACKGROUND: #dfdfdf; FONT-SIZE: 9pt
+}
+TR.Listrow3 {
+	FONT-FAMILY: Arial; BACKGROUND: #ffffff; FONT-SIZE: 9pt
+}
+TD.ListCellTitle {
+	BORDER-BOTTOM: #999999 1px solid; BORDER-LEFT: #999999 0px solid; PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; BORDER-TOP: #999999 1px solid; BORDER-RIGHT: #999999 1px solid; PADDING-TOP: 2px
+}
+TD.ListCellRow {
+	BORDER-BOTTOM: #999999 1px solid; BORDER-LEFT: #999999 1px solid; PADDING-BOTTOM: 0px; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; BORDER-TOP: #999999 1px solid; BORDER-RIGHT: #999999 1px solid; PADDING-TOP: 0px
+}
+TD.listtail {
+	BORDER-BOTTOM: #999999 1px solid; BACKGROUND: #c6d7ef; FONT-SIZE: 9pt
+}
+TABLE.InputFrameMain {
+	BORDER-BOTTOM: #9c9c9c 1px solid; BORDER-LEFT: #9c9c9c 1px solid; BACKGROUND-COLOR: #f7fbff; MARGIN-TOP: 15px; BORDER-COLLAPSE: collapse; MARGIN-BOTTOM: 5px; BORDER-TOP: #9c9c9c 1px solid; BORDER-RIGHT: #9c9c9c 1px solid
+}
+TR.InputFrameLine {
+	PADDING-BOTTOM: 1px; FONT-FAMILY: 'Arial'; FONT-SIZE: 9pt; PADDING-TOP: 1px
+}
+TR.InputFrameButtonLine {
+	PADDING-BOTTOM: 1px; FONT-FAMILY: 'Arial'; FONT-SIZE: 9pt; PADDING-TOP: 5px
+}
+TD.InputLabelCell {
+	BORDER-BOTTOM: #9c9c9c 0px solid; TEXT-ALIGN: right; BORDER-LEFT: #9c9c9c 0px solid; PADDING-LEFT: 5px; PADDING-RIGHT: 10px; FONT-FAMILY: '宋体'; COLOR: black; FONT-SIZE: 9pt; VERTICAL-ALIGN: top; BORDER-TOP: #9c9c9c 0px solid; FONT-WEIGHT: bold; BORDER-RIGHT: #9c9c9c 0px solid; PADDING-TOP: 5px
+}
+TD.InputAreaCell {
+	BORDER-BOTTOM: #9c9c9c 1px solid; BORDER-LEFT: #9c9c9c 0px solid; BORDER-TOP: #9c9c9c 0px solid; BORDER-RIGHT: #9c9c9c 0px solid
+}
+TEXTAREA.InputArea {
+	BORDER-BOTTOM: #888888 1px solid; BORDER-LEFT: #888888 1px solid; BACKGROUND-COLOR: #ffffff; BORDER-TOP: #888888 1px solid; BORDER-RIGHT: #888888 1px solid
+}
+SELECT.Inputselect {
+	BORDER-BOTTOM: #888888 1px solid; BORDER-LEFT: #888888 1px solid; BACKGROUND-COLOR: #ffffff; BORDER-TOP: #888888 1px solid; BORDER-RIGHT: #888888 1px solid
+}
+INPUT.button {
+	BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; PADDING-BOTTOM: 2px; LINE-HEIGHT: 9pt; BACKGROUND-COLOR: #c6d7ef; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-FAMILY: 宋体; HEIGHT: 20px; COLOR: #000080; FONT-SIZE: 9pt; BORDER-TOP: 1px solid; CURSOR: hand; BORDER-RIGHT: 1px solid; PADDING-TOP: 2px
+}
+INPUT.input {
+	BORDER-BOTTOM: #888888 1px solid; BORDER-LEFT: #888888 1px solid; BACKGROUND-COLOR: #ffffff; HEIGHT: 18px; BORDER-TOP: #888888 1px solid; TOP: 0px; BORDER-RIGHT: #888888 1px solid; LEFT: 0px
+}
+INPUT.inputreadonly {
+	BORDER-BOTTOM: #888888 0px solid; BORDER-LEFT: #888888 0px solid; BACKGROUND-COLOR: transparent; COLOR: #000000; BORDER-TOP: #888888 0px solid; TOP: 0px; BORDER-RIGHT: #888888 0px solid; LEFT: 0px
+}
+.LinkText {
+	COLOR: #0065ce; CURSOR: hand
+}
+.getdate {
+	CURSOR: hand; BEHAVIOR: url(css/getdate_vbs.htc)
+}

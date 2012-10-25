@@ -1,0 +1,9 @@
+<j2ee:application xmlns:j2ee="http://java.sun.com/xml/ns/j2ee">
+  <j2ee:display-name>demo1</j2ee:display-name>
+  <j2ee:module>
+    <j2ee:web>
+      <j2ee:web-uri>.</j2ee:web-uri>
+      <j2ee:context-root>/demo1</j2ee:context-root>
+    </j2ee:web>
+  </j2ee:module>
+</j2ee:application>

@@ -1,0 +1,10 @@
+1¡¢MerUser
+@Column(name = "chinese_name", updatable=false, length = 20)
+@Column(name = "login_name", updatable=false, length = 20)
+@Column(name = "password", updatable=false, length = 10)
+
+2¡¢MerRoom
+	@Transient
+	public String getStateDesc() {
+		return stateDesc;
+	}
