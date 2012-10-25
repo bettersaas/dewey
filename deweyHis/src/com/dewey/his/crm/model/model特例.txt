@@ -1,0 +1,14 @@
+	1¡¢ContractualUnit
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contractualUnit")
+	@OrderBy("id")
+	public List<MerContractualRelation> getMerContractualRelations()
+	
+   @ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "room_type_id")
+	public RoomType getRoomType() {
+		return this.roomType;
+	}
+
+2¡¢ContractualUnit
+	@Column(name = "create_time", updatable=false, insertable=false, length = 23)
+	public Timestamp getCreateTime() {

@@ -1,0 +1,18 @@
+#Fri Sep 02 21:05:31 CST 2011
+eclipse.preferences.version=1
+encoding//WebRoot/commons/messages.jsp=GBK
+encoding//WebRoot/commons/pager1.jsp=GBK
+encoding//WebRoot/scripts/application.js=GBK
+encoding//WebRoot/scripts/treePanel.js=GBK
+encoding//WebRoot/scripts/treePanelCommon.js=GBK
+encoding//WebRoot/styles/treePanel.css=GBK
+encoding//resources/mybatis3/spring_mybaits_mapping.xml=GBK
+encoding//resources/mybatis3/userInfo_sqlmap_mapping.xml=GBK
+encoding//resources/spring/applicationContext-component.xml=GBK
+encoding//resources/spring/applicationContext-hibernate-dao.xml=GBK
+encoding//resources/spring/applicationContext-resource.xml=GBK
+encoding//resources/spring/applicationContext-service.xml=GBK
+encoding//resources/springmvc/springmvc-servlet.xml=GBK
+encoding/build.properties=GBK
+encoding/build.xml=GBK
+instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true

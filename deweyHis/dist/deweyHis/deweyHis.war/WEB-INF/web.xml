@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" >
+
+	<display-name>DEMO Web Application</display-name>
+	<description>B/S Web Application</description>
+	
+	<!-- 指定ServletContext中包含一个参数，并可应用于war下的所有servlet -->
+	<context-param>
+	    <param-name>email</param-name>
+	    <param-value>eimeng007@yahoo.com.cn</param-value>
+	</context-param>
+
+	 <!-- 
+	 		应用路径: 当前应用的路径变量，也就是说你可以在其他代码中使用${spring.webapp.root}指代当前应用路径。经常用它来设置log的输出目录。
+	 		Web 应用根目录以该属性名添加到系统参数中,WebAppRootListener 可以将 Web 应用根目录添加到系统参数中，对应的属性名可以通过名为“webAppRootKey”的 Servlet 上下文参数指定，默认为“webapp.root”。
+	 -->
+	 <context-param>
+		  <param-name>webAppRootKey</param-name>
+		  <param-value>webapp.root</param-value>
+	 </context-param>
+	
+	 <!-- 
+		指定 Log4J 配置文件的地址：
+			log4j的配置文件只能放在classpath根路径。
+			spring中很多代码使用了不同的日志接口，既有log4j也有commons-logging，这里只是强制转换为log4j！并且，。
+		同时，需要通过commons-logging配置将日志控制权转交给log4j。
+		同时commons-logging.properties必须放置在classpath根路径。 
+		commons-logging.properties内容：
+		org.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger
+	 -->
+	 <context-param>
+		  <param-name>log4jConfigLocation</param-name>
+		  <param-value>classpath:log4j.properties</param-value>  <!-- 等同于 /WEB-INF/classes/log4j.properties  -->
+	 </context-param>
+	 
+	 <!-- 开一条watchdog线程每60秒扫描一下配置文件的变化 -->
+	 <context-param>
+		  <param-name>log4jRefreshInterval</param-name>
+		  <param-value>60000</param-value>
+	 </context-param>
+	
+	<!-- Spring ApplicationContext配置文件的路径,可使用通配符，多个路径用,号分隔 此参数用于后面的Spring-Context loader -->
+	<!-- Spring param Config    Spring上下文 配置    -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:spring/*.xml </param-value><!-- 包含计划任务的配置 classpath*:spring/*.xml  classpath*:quartz/scheduling-*.xml -->
+	</context-param>
+	
+	<!-- 默认i18n资源文件 -->
+	<!--  
+		<context-param>
+			<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+			<param-value>i18n/messages</param-value>
+		</context-param>
+	-->
+	
+	<!-- session超时定义,单位为分钟 -->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+
+    <mime-mapping>
+        <extension>exe</extension>
+        <mime-type>application/octet-stream</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ico</extension>
+        <mime-type>image/x-icon</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpeg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gif</extension>
+        <mime-type>image/gif</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jar</extension>
+        <mime-type>application/java-archive</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>htm</extension>
+        <mime-type>text/html;charset=GBK</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html;charset=GBK</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>css</extension>
+        <mime-type>text/css</mime-type>
+    </mime-mapping>
+	<mime-mapping>
+        <extension>js</extension>
+        <mime-type>text/javascript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>doc</extension>
+        <mime-type>application/msword</mime-type>
+    </mime-mapping>
+	<mime-mapping> 
+		<extension>xls</extension> 
+		<mime-type>application/msexcel</mime-type> 
+	</mime-mapping>
+	<mime-mapping>
+	    <extension>pdf</extension>
+	    <mime-type>application/pdf</mime-type>
+	</mime-mapping>
+   <mime-mapping>
+    <extension>jsp</extension>   
+    <mime-type>text/html;charset=gbk</mime-type>   
+  </mime-mapping>
+	
+	<!-- 默认首页定义 -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<!-- Error Page定义 -->
+	<!-- 错误页面 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/commons/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/commons/404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/commons/403.jsp</location>
+	</error-page>
+	
+	<error-page>
+  		<exception-type>java.io.IOException</exception-type>
+  		<location>/common/io_error.jsp</location>
+ 	</error-page>
+	
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/common/error.jsp</location>
+	</error-page>
+ 	 
+ 	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/common/error.jsp</location>
+	</error-page>
+	
+	<!-- ============================== SpringSecurity filter ================================================= 
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	-->
+	
+	<!-- =========================== HiddenHttpMethodFilter ==================================================-->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<servlet-name>springmvc</servlet-name>
+	</filter-mapping>
+	
+	<!--==================================== 著名 Character Encoding filter ===================================-->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>GBK</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+			<filter-name>encodingFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- spring的session管理  解决hibernate因Session关闭导致的延迟加载例外（异常） -->
+	<filter>
+	 <filter-name>openSessionInViewFilter</filter-name>
+	 <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>	
+	 <init-param>
+			<param-name>sessionFactoryBeanName</param-name>
+			<param-value>sessionFactory</param-value>   <!--这个sessionFactory是Spring配置文件中配置的bean-->
+	 </init-param>	
+	 <init-param>
+			<param-name>singleSession</param-name>
+			<param-value>true</param-value>
+	 </init-param>
+	</filter>
+	<filter-mapping>
+			<filter-name>openSessionInViewFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!--  解决JPA因EntityManager关闭导致的延迟加载例外（异常），在web.xml中加入配置  
+	<filter>
+	<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	-->
+	
+	<!--==================================== 自定义过滤器 ===================================-->
+
+	<!-- 这里设置的是未登录用户也可以浏览的页面，一般设置你的注册、登录、错误页还有主页等就可以 -->
+	<filter>
+		<filter-name>LoginPrivilegeAccess</filter-name>
+		<filter-class>common.filter.LoginPrivilegeAccess</filter-class>
+		<init-param>
+			<param-name>nofilter</param-name>
+			<param-value>/index.jsp,/login.jsp,/registShow,/regist.jsp,/logout.jsp,/login,/regist,/logout.do,/403.jsp,/404.jsp,/error.jsp,/io_error.jsp,/windowclose.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>sendRedirect</param-name>
+			<param-value>/index.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>startTime</param-name><!--  反常时间的开始  -->
+			<param-value>-1</param-value>
+		</init-param>
+		<init-param>
+			<param-name>endTime</param-name><!--  反常时间的结束  -->
+			<param-value>-1</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginPrivilegeAccess</filter-name>
+		<url-pattern>/*</url-pattern><!-- 这里是映射，你要对什么后缀的文件过滤？可以改为*.*等  -->
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+	
+	<!--   系统调试辅助过滤器  -->
+	<filter>
+		<filter-name>DebugFilter</filter-name>
+		<filter-class>common.filter.DebugFilter</filter-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>DebugFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+	
+	<!--   响应压缩过滤器  -->
+	<filter>
+		<filter-name>CompressionFilter</filter-name>
+		<filter-class>common.filter.CompressionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CompressionFilter</filter-name>
+		<servlet-name>longServlet</servlet-name>
+	</filter-mapping>
+		
+	<listener>
+		<listener-class>common.listener.ContextListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>common.listener.SessionListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>common.listener.RequestListener</listener-class>
+	</listener>
+	
+	<!--Spring ApplicationContext 载入 -->
+	<!-- Spring Listener Config 接管后的Spring ContextLoaderListener-->
+	<listener>
+		<listener-class>common.core.webcontext.MyContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- =========================使Spring支持request与session的scope,如:<bean id="loginAction" class="com.foo.LoginAction" scope="request"/> ==================================-->
+	<listener>
+	  <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	
+	<!--   负责将 Web 应用根目录以 webAppRootKey 上下文参数指定的属性名添加到系统参数中 
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
+	-->
+	
+	<!-- 配置log4j的监听器  使用该监听器初始化 Log4J 日志引擎  -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	 
+	<!-- ================================Spring 刷新Introspector防止内存泄露 =====================================-->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/WEB-INF/use-functionsel.tld</taglib-uri>
+			<taglib-location>/WEB-INF/use-functionsel.tld</taglib-location>
+		</taglib>
+	    <!-- jsp-property-group>
+	        <description>指定JSP文件的配置属性</description>
+	        <display-name>jspConfiguration</display-name>
+	        <url-pattern>*.jsp</url-pattern>
+	        <el-ignored>false</el-ignored>
+	        <page-encoding>GBK</page-encoding>
+	    </jsp-property-group -->
+	</jsp-config>
+
+	<servlet>
+	    <servlet-name>springmvc</servlet-name>
+	    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	    <init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value> classpath*:springmvc/springmvc-servlet.xml </param-value>
+		</init-param>
+	    <load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>springmvc</servlet-name>
+	    <url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 拥有很多输出的servle需要压缩的filter支持压缩 -->
+	<servlet>
+	    <servlet-name>longServlet</servlet-name>
+	    <servlet-class>common.servlet.LongServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>longServlet</servlet-name>
+	    <url-pattern>/longServlet</url-pattern>
+	</servlet-mapping>
+
+</web-app>

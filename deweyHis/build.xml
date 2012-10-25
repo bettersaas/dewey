@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- default="precommit" -->
+<project name="build-deweyHis" basedir="." default="info" >
+	
+	<description>系统的build 脚本. 所以相关配置的修改可通过调整 build.properties 文件实现.</description>
+	
+	<property name="publish.version" value="0.1" />
+	
+    <!-- 系统环境变量设置 -->
+	<property environment="env" />                                 <!-- 设置系统环境属性，通过它可以访问系统环境变量 -->
+	
+	<!-- 变量设置 -->
+    <property name="project.root" value="${basedir}"/>             <!-- 必须放在第二句，在build.properties中不需要再设置此属性 -->
+    <property file="build.properties" description="全局配置" />     <!-- 设置这个ant文件的全局属性配置文件 -->
+	
+    <!-- 代码目录 -->
+    <property name="src.dir"         value="${project.root}/src" />
+	<property name="resources.dir"   value="${project.root}/resources" />
+    <property name="web.dir"         value="${project.root}/WebRoot" />
+    <property name="config.dir"      value="${project.root}/config" />
+	<property name="lib.dir"         value="${project.root}/lib" />
+	<property name="build.root.dir"        value="${project.root}/build" />
+    <property name="build.lib.dir"         value="${build.root.dir}/WEB-INF/lib" />
+    <property name="build.classes.dir"     value="${build.root.dir}/WEB-INF/classes" />
+	<property name="dist.root.dir"         value="${project.root}/dist" />
+	
+	<!-- 发布包目录 -->
+	<property name="dist.dir"           value="${dist.root.dir}/${project.name}" />
+	<!-- JAR过渡编译包 -->
+	<property name="jar_transition.dir" value="${dist.dir}/${project.name}.jar" />
+	<!-- WAR过渡编译包 -->
+	<property name="war_transition.dir" value="${dist.dir}/${project.name}.war" />
+	
+	<property name="deploy.exploded.dir" value="${dist.dir}/app" />
+	
+	<!-- Weblogic的jar文件夹 -->
+	<path id="weblogic_jars">
+		<fileset dir="${wls.modules.dir}" includes="*.jar"/>
+		<fileset dir="${wls.lib.dir}"     includes="*.jar"/>
+		<!--fileset file="${wls.javax.servlet.jar}" /-->
+		<!--fileset file="${wls.javax.jsp.jar}" /-->
+	</path>
+	
+	<!-- Tomcat的jar文件夹 -->
+	<path id="Tomcat_jars">
+		<fileset dir="${catalina.lib.dir}" includes="*.jar"/>
+	    <fileset dir="${catalina_home}/bin">
+	     <include name="*.jar"/>
+	    </fileset>
+	    <fileset dir="${catalina_home}/lib">
+	     <include name="*.jar"/>
+	    </fileset>
+		<!--fileset file="${catalina.javax.servlet.jar}" /-->
+		<!--fileset file="${catalina.javax.jsp.jar}" /-->
+	</path>
+	
+	<!-- 系统的所有classpath设置路径 -->
+	<path id="classpath_all">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+		<fileset dir="${lib.dir}" includes="**/*.zip"/>
+		<!--path refid="weblogic_jars"/-->
+		<path refid="Tomcat_jars"/>
+	</path>
+	
+	<!--Tomcat编译jsp文件的任务定义 -->
+	<taskdef classname="org.apache.jasper.JspC" name="tomcatjspc">
+		<classpath id="jsp2java.classpath">
+			<fileset dir="${catalina_home}/bin">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${catalina_home}/lib">
+				<include name="*.jar"/>
+			</fileset>
+			<path refid="classpath_all"/>
+		</classpath>
+	</taskdef>
+	
+	<!-- websphere编译jsp文件的任务定义
+	<property name="was.home" location="D:\IBM2\WebSphere\AppServer"/>
+	<taskdef classname="com.ibm.websphere.ant.tasks.JspC" name="wsjspc" classpath= "${was.home}/plugins/com.ibm.ws.runtime_6.1.0.jar" />
+	-->
+	
+	<!-- 系统的所需jar包路径 -->
+	<path id="war_lib_jar_all">
+		<fileset dir="${lib.dir}" includes="*.jar" />
+		<fileset dir="${lib.dir}" includes="*.zip"/>
+		<fileset dir="${lib.dir}/asm" includes="*.jar"/>
+		<fileset dir="${lib.dir}/antlr" includes="*.jar" />
+		<fileset dir="${lib.dir}/c3p0" includes="*.jar" />
+		<fileset dir="${lib.dir}/cglib" includes="*.jar" />
+		<fileset dir="${lib.dir}/commons" includes="*.jar" />
+		<fileset dir="${lib.dir}/dom4j" includes="*.jar" />
+		<fileset dir="${lib.dir}/ehcache" includes="*.jar" />
+		<fileset dir="${lib.dir}/hibernate3.6" includes="*.jar" />
+		<fileset dir="${lib.dir}/jbosscache" includes="*.jar" />
+		<fileset dir="${lib.dir}/jpa" includes="*.jar" />
+		<fileset dir="${lib.dir}/jackson" includes="*.jar" />
+		<fileset dir="${lib.dir}/infinispan" includes="*.jar" />
+		<fileset dir="${lib.dir}/itext" includes="*.jar" />
+		<fileset dir="${lib.dir}/j2ee" includes="*.jar" />
+		<fileset dir="${lib.dir}/javassist" includes="*.jar" />
+		<fileset dir="${lib.dir}/log4j" includes="*.jar" />
+		<fileset dir="${lib.dir}/msqljdbc" includes="*.jar" />
+		<fileset dir="${lib.dir}/oraclejdbc" includes="*.jar" />
+		<fileset dir="${lib.dir}/oscache" includes="*.jar" />
+		<fileset dir="${lib.dir}/proxool" includes="*.jar" />
+		<fileset dir="${lib.dir}/quartz" includes="*.jar" />
+		<fileset dir="${lib.dir}/slf4j" includes="*.jar" />
+		<fileset dir="${lib.dir}/spring-framework-3.1.0.M2" includes="*.jar" />
+		<fileset dir="${lib.dir}/spring-security-3.1.0.RC3" includes="*.jar" />
+		<fileset dir="${lib.dir}/swarmcache" includes="*.jar" />
+		<fileset dir="${lib.dir}/unitils" includes="*.jar" />
+		<fileset dir="${lib.dir}/validation" includes="*.jar" />
+		<fileset dir="${lib.dir}/sqlserver2005" includes="*.jar" />
+	</path>
+	
+	<target name="info" description="显示项目构建信息">
+		<echo message="@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" />
+		<echo message="+---------------------------- 正在构建的项目信息 ----------------------------+" />
+		<echo message="+------------------------------------------------------------------------+" />
+		<echo level="info">
+		项目名称|${project.name}
+		项目描述!${project.description}		
+		</echo>
+		<echo message="+------------------------------------------------------------------------+" />
+		<echo message="@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" />
+	</target>
+	
+    <!-- =================================================================== -->
+	<!-- 初始化，清空所有输出文件包括build和部署目录, 创建目录                                                -->
+	<!-- =================================================================== -->
+	<target name="clean_all" depends="info">
+		<!--delete dir="${dist.dir}/${project.name}.war" />
+		<delete dir="${war_transition.dir}" /-->
+		<delete dir="${dist.root.dir}" />
+	    <delete dir="${build.classes.dir}" />
+	    <delete dir="${build.lib.dir}" />
+		<delete dir="${build.root.dir}" />
+		<mkdir dir="${build.root.dir}" />
+		<mkdir dir="${build.root.dir}/WEB-INF"/>
+		<mkdir dir="${dist.root.dir}" />
+		<!-- session文件持久化存放地 -->
+		<mkdir dir="${dist.root.dir}/sessionstore" />
+		<!-- jsp文件编译存放地方 -->
+		<mkdir dir="${dist.root.dir}/jspclass" />
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${build.lib.dir}" />
+	</target>
+	
+    <!-- =================================================================== -->
+    <!-- 编译JAVA文件                                                                                                                                                       -->
+    <!-- =================================================================== -->
+    <target name="compileJava"  description="编译应用程序">
+    	<echo>开始编译java源文件...</echo>
+    	<!-- 开发阶段用   debug="on"  -->
+		<javac destdir="${build.classes.dir}" target="1.5" encoding="GBK" fork="true" memoryMaximumSize="800M" 
+			deprecation="true" optimize="false" failonerror="true" excludes="**/CVS/**,**/.svn/**,**/test/**,**/*Test.java" debug="on">
+			<compilerarg value="-Xlint:unchecked"/> <!-- 泛型 -->
+			<src path="${src.dir}" />
+			<classpath refid="classpath_all" />
+			<exclude name="test/**" />
+			<exclude name="**/test/**" />
+			<exclude name="**/*_TEST.java" />
+		</javac>
+	    <copy todir="${build.classes.dir}" filtering="true">
+	      <fileset dir="${src.dir}">
+	        <include name="**/*.properties"/>
+	        <include name="**/*.xml"/>
+	      	<exclude name="build.xml" />
+	      </fileset>
+		  <fileset dir="${resources.dir}">
+		    <include name="**/*.properties"/>
+		    <include name="**/*.xml"/>
+		  	<exclude name="build.xml" />
+		  </fileset>
+	    </copy>
+	</target>
+	
+    <!-- =================================================================== -->
+    <!-- 编译JSP文件 -->
+    <!-- =================================================================== -->
+	<target name="compileJsp">
+		<!-- 注意JSP文件要设置为GB18030编码 compile="true"  validateXml="false"  webXmlFragment="${war_transition.dir}/WEB-INF/web.xml"  -->
+		<tomcatjspc verbose="0" addWebXmlMappings= "false" classpath="jsp2java.classpath" javaEncoding="GBK" uriroot="${web.dir}" outputDir="${dist.root.dir}/jspclass"/>
+	</target>
+	<!-- target name="compileJsp1">
+		<wsjspc wasHome="${was.home}" src="${webapp.path}" toDir="${webapp.path}/ttest/temp-jsp" forcecompilation="true" verbose="false" deprecation="false" loglevel="CONFIG" />
+	</target -->
+
+	<!-- war文件中间生成过程 -->
+	<target name="war_transition" description="构建war文件路径包" depends="compileJava,compileJsp">
+		<!-- delete dir="${war_transition.dir}" -->
+		<mkdir dir="${war_transition.dir}" />
+		<mkdir dir="${war_transition.dir}/WEB-INF" />
+		<mkdir dir="${war_transition.dir}/WEB-INF/classes" />
+		<mkdir dir="${war_transition.dir}/WEB-INF/lib" />
+		<!-- WAR过渡编译包中class文件 -->
+		<copy todir="${war_transition.dir}/WEB-INF/classes">
+	        <fileset dir="${build.classes.dir}">
+	        	<include name="**/*.*"/>
+	        </fileset>
+		</copy>
+		<!-- WAR过渡编译包中jar文件 -->
+		<copy todir="${war_transition.dir}/WEB-INF/lib" preservelastmodified="true">
+			<path refid="war_lib_jar_all"/>
+		</copy>
+		<!-- WAR过渡编译包中WEB-INF下的系统配置文件 -->
+		<copy todir="${war_transition.dir}/WEB-INF">
+			<fileset dir="${config.dir}/deweyHis.war/WEB-INF">
+				<include name="*.xml" />
+				<include name="*.tld" />
+				<include name="*.properties" />
+			</fileset>
+		</copy>
+		<!-- WAR过渡编译包中jsp文件 -->
+		<copy todir="${war_transition.dir}">
+			<fileset dir="${web.dir}/">
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- ==========================================  -->
+	<!-- ============ 项目只打（WAR）目标 ============ -->
+	<!-- ==========================================  -->
+  	<target name="1/1war" depends="war_transition" description="构建唯一war包...">
+		<!--delete dir="${war_transition.dir}" /-->
+		<war warfile="${dist.root.dir}/${project.name}.war" basedir="${war_transition.dir}" webxml="${war_transition.dir}/WEB-INF/web.xml" compress="false">
+			<manifest>
+				<attribute name="Built-By" value="Sun Microsystems" />
+				<attribute name="Version" value="1.0" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</war>
+	</target>
+	
+	<!-- ========================================== -->
+	<!-- ============ 项目打包1/2（JAR）目标 ============ -->
+	<!-- ========================================== -->
+	<target name="1/2jar" depends="compileJava" description="构建1/2jar包...">
+		<!--delete dir="${jar_transition.dir.dir}" /-->
+		<mkdir dir="${jar_transition.dir}" />
+		<mkdir dir="${jar_transition.dir}/lib" />
+		<!-- class文件 -->
+		<copy todir="${jar_transition.dir}">
+	        <fileset dir="${build.classes.dir}">
+	        	<include name="**/*.*"/>
+	        </fileset>
+		</copy>
+		<!-- jar文件 -->
+		<!-- copy todir="${jar_transition.dir}/lib" preservelastmodified="true">
+			<path refid="war_lib_jar_all"/>
+		</copy -->
+		<tstamp>
+			<format property="jar.time" pattern="yyyy-MM-dd hh:mm aa" locale="en" />
+		</tstamp>
+		<buildnumber />
+		<!-- 打jar包 -->
+		<jar basedir="${build.classes.dir}" jarfile="${dist.root.dir}/${project.name}.jar">
+			<manifest>
+				<attribute name="Built-By" value="Sun Microsystems" />
+				<attribute name="Version" value="1.0" />
+				<attribute name="Build-Version" value="${publish.version}" />
+				<attribute name="Build-On" value="${jar.time}" />
+				<attribute name="Build-Number" value="${build.number}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- ==========================================     -->
+	<!-- ============ 项目打包2/2（WAR）目标 ============ -->
+	<!-- ==========================================     -->
+  	<target name="2/2war" depends="compileJsp"  description="构建2/2war包...">
+		<!--delete dir="${war_transition.dir}" /-->
+		<mkdir dir="${war_transition.dir}" />
+		<mkdir dir="${war_transition.dir}/WEB-INF" />
+		<mkdir dir="${war_transition.dir}/WEB-INF/classes" />
+		<mkdir dir="${war_transition.dir}/WEB-INF/lib" />
+		<!-- WAR中需要的class文件 -->
+		<!--copy todir="${war_transition.dir}/WEB-INF/classes">
+	        <fileset dir="${build.classes.dir}">
+	        	<include name="**/*.*"/>
+	        </fileset>
+		</copy-->
+		<!-- WAR中需要的jar文件 -->
+		<copy todir="${war_transition.dir}/WEB-INF/lib" preservelastmodified="true">
+			<path refid="war_lib_jar_all"/>
+			<fileset file="${dist.root.dir}/${project.name}.jar" />
+		</copy>
+		<!-- WAR中WEB-INF下的系统配置文件 -->
+		<copy todir="${war_transition.dir}/WEB-INF">
+			<fileset dir="${config.dir}/deweyHis.war/WEB-INF">
+				<include name="*.xml" />
+				<include name="*.tld" />
+				<include name="*.properties" />
+			</fileset>
+		</copy>
+		<!-- WAR中jsp文件 -->
+		<copy todir="${war_transition.dir}">
+			<fileset dir="${web.dir}/">
+			</fileset>
+		</copy>
+		<tstamp>
+			<format property="jar.time" pattern="yyyy-MM-dd hh:mm aa" locale="en" />
+		</tstamp>
+		<buildnumber />
+		<war warfile="${dist.root.dir}/${project.name}.war" basedir="${war_transition.dir}" webxml="${war_transition.dir}/WEB-INF/web.xml" compress="false">
+			<manifest>
+				<attribute name="Built-By" value="Sun Microsystems" />
+				<attribute name="Version" value="1.0" />
+				<attribute name="Build-Version" value="${publish.version}" />
+				<attribute name="Build-On" value="${jar.time}" />
+				<attribute name="Build-Number" value="${build.number}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+		</war>
+	</target>
+	
+	<!--target name="warUnDeployToTomcat"  description="项目打war包发布到Tomcat上去..." >
+		<delete dir="D:/apache-tomcat-6.0.10/webapps/deweyHis" />
+	</target>
+	
+	<target name="warDeployToTomcat"  depends="war_transition" description="项目打war包发布到Tomcat上去..." >
+		<copy todir="D:/apache-tomcat-6.0.10/webapps/deweyHis">
+			<fileset dir="${war_transition.dir}">
+			</fileset>
+		</copy>
+	</target-->
+
+</project>

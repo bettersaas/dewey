@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="GBK"?> 
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration> 
+	<typeAliases> 
+		<typeAlias alias="userInfoDO" type="com.stu.entity.UserInfoDO"/>
+	</typeAliases> 
+	<mappers> 
+		<mapper resource="userInfo_sqlmap_mapping.xml"/> 
+	</mappers> 
+</configuration>

@@ -1,0 +1,18 @@
+1¡¢CheckIn
+private List<CustCheckInRoom> custCheckInRooms =  new ArrayList<CustCheckInRoom>(
+
+//@Transient
+//public String getContractualUnitCompany() {
+//	return contractualUnitCompany;
+//}
+
+@Column(name = "lcd", updatable=false, insertable=false,  length = 23)
+public Timestamp getLcd() {
+	return this.lcd;
+}
+
+2¡¢CustCheckInRoom
+@Column(name = "lcd", updatable=false, insertable=false,  length = 23)
+public Timestamp getLcd() {
+	return this.lcd;
+}
